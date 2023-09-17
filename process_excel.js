@@ -19,6 +19,32 @@ function Clamp(value, min, max)
     return Math.min(Math.max(value, min), max);
 }
 
+function GetHealthyRange(range, rmin, rmax)
+{
+    if (!range)
+        return 1;
+
+    if (range.includes("~"))
+    {
+        const [min, max] = range.split("~").map(parseFloat);
+        return max - min;
+    }
+
+    if (range.startsWith("<"))
+    {
+        const threshold = parseFloat(range.substring(1));
+        return threshold - rmin;
+    }
+
+    if (range.startsWith(">"))
+    {
+        const threshold = parseFloat(range.substring(1));
+        return rmax - threshold;
+    }
+
+    return 1;
+}
+
 function CreateRangeChecker(range)
 {
     if (!range) {
@@ -66,6 +92,19 @@ function GetTag(range)
     return null;
 }
 
+function GetHealthyStatus(standard, value)
+{
+    if (standard['healthy'](value))
+    {
+        return Status.HEALTHY;
+    }
+    if (standard['warning'](value))
+    {
+        return Status.WARNING;
+    }
+    return Status.DANGEROUS;
+}
+
 function HandleStandard(standardData)
 {
     const fileInput = document.getElementById(`standard`);
@@ -100,6 +139,8 @@ function HandleStandard(standardData)
                     value['tags'] = value['tags'].concat(tag2);
                 value['tags'] = [...new Set(value['tags'])];
                 value['healthy'] = CreateRangeChecker(data[i][3]);
+                value['healthy_range'] = GetHealthyRange(data[i][3],
+                    value['min'], value['max']);
                 value['warning'] = CreateRangeChecker(data[i][4]);
                 value['unit'] = data[i][6];
                 standardData[RemoveSpaces(tags[i])] = value;
@@ -188,18 +229,9 @@ function HandleData(standard, report, config)
                     for (const item of Object.keys(values))
                     {
                         const result = {};
-                        const itemCriteria = standard[item];
-                        let value = values[item];
-                        result['value'] = value;
-                        result['result'] = Status.DANGEROUS;
-                        if (itemCriteria['healthy'](value))
-                        {
-                            result['result'] = Status.HEALTHY;
-                        }
-                        else if (itemCriteria['warning'](value))
-                        {
-                            result['result'] = Status.WARNING;
-                        }
+                        result['value'] = values[item];
+                        result['result'] =
+                            GetHealthyStatus(standard[item], values[item]);
                         personalReport[item] = result;
 
                     }

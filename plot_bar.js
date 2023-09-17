@@ -35,7 +35,8 @@ function PlotBar(item, standard, report)
         warning: 'rgb(255, 192, 0)',
         danger: 'rgb(255, 30, 2)'
     };
-    const resolution = Math.min(0.1, 0.3 / Math.log(standard['max'] + 1.0));
+    const range = standard['max'] - standard['min'];
+    const resolution = Math.min(0.1, 0.3 / Math.log(range + 1.0));
     for (let i = 0; i <= 1.0; i += resolution) {
         const value = GetValueFromPercentage(
             i, standard['min'], standard['max']);
@@ -75,7 +76,28 @@ function PlotBar(item, standard, report)
     context.fillStyle = "black";
     context.beginPath();
     const dotSize = 6;
-    const dotX = canvas.width * GetPercentageFromValue(report['value'],
+    var value = report['value'];
+    const smallRange = 0.07 * range;
+    const smallHealthyRange = 0.1 * standard['healthy_range'];
+    if (report['result'] == Status.HEALTHY)
+    {
+        if (GetHealthyStatus(standard, value + smallRange) !=
+            Status.HEALTHY)
+            value -= smallHealthyRange;
+        else if (GetHealthyStatus(standard, value - smallRange) !=
+            Status.HEALTHY)
+            value += smallHealthyRange;
+    }
+    else
+    {
+        if (GetHealthyStatus(standard, value + smallRange) ==
+            Status.HEALTHY)
+            value -= smallRange;
+        else if (GetHealthyStatus(standard, value - smallRange) ==
+            Status.HEALTHY)
+            value += smallRange;
+    }
+    const dotX = canvas.width * GetPercentageFromValue(value,
         standard['min'], standard['max']);
     const dotXAdj = Clamp(dotX, dotSize, canvas.width - dotSize);
     context.arc(dotXAdj, canvas.height / 2, dotSize, 0, 2 * Math.PI);
