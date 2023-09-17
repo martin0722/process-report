@@ -104,18 +104,11 @@ function PlotBars(standards, report, config)
         {
             var label = document.createElement('p');
             label.className = 'label-p';
-            if (standard['unit'].length > 1)
-                label.innerHTML = `${tag}<br>${standard['unit']}`;
-            else
-                label.innerHTML = `${tag} ${standard['unit']}`;
+            label.innerHTML = `${tag}`
             label.style.fontSize = `${fontSizeLabel}px`;
             label.style.position = 'relative';
             label.style.display = 'inline-block';
-            var posOffset = 0;
-            if (tag.toString().length > standard['unit'].length)
-                posOffset = -0.5 * fontSizeLabel / 10.0 * GetStringWidth(tag.toString());
-            else
-                posOffset = -0.5 * fontSizeLabel / 10.0 * GetStringWidth(standard['unit']);
+            const posOffset = -0.0 * fontSizeLabel / 10.0 * GetStringWidth(tag.toString());
             const position = 600 * GetPercentageFromValue(tag,
                 standard['min'], standard['max']) + posOffset + accumulateOffset;
             label.style.left = `${position}px`;
