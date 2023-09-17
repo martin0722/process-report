@@ -108,14 +108,14 @@ function PlotBars(standards, report, config)
             label.style.fontSize = `${fontSizeLabel}px`;
             label.style.position = 'relative';
             label.style.display = 'inline-block';
-            const posOffset = -0.0 * fontSizeLabel / 10.0 * GetStringWidth(tag.toString());
+            const posOffset = -0.5 * fontSizeLabel / 10.0 * GetStringWidth(tag.toString());
             const position = 600 * GetPercentageFromValue(tag,
                 standard['min'], standard['max']) + posOffset + accumulateOffset;
             label.style.left = `${position}px`;
             const computedStyle = window.getComputedStyle(label);
             const font = computedStyle.getPropertyValue("font");
             barDiv.appendChild(label);
-            accumulateOffset += 2 * posOffset;
+            accumulateOffset += 1.5 * posOffset;
         }
 
         var value = document.createElement('p');
