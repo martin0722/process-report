@@ -1,0 +1,33 @@
+#barChart {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.first-column {
+    padding: 1px;
+}
+
+.second-column {
+    padding: 1px;
+    width: 600px;
+}
+
+.canvas-container {
+    width: 600px;
+}
+
+.bar-container {
+    display: flex;
+}
+
+.value-p {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.label-p {
+    text-align: center;
+}

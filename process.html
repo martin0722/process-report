@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel File Reader</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+</head>
+
+<body>
+
+    <link rel="stylesheet" type="text/css" href="bar.css">
+    <script src="plot_bar.js"></script>
+    <script src="process_excel.js"></script>
+
+    <div class="container mt-5">
+        <div class="mb-3">
+            <label for="standard" class="form-label">Select the standard file (.xlsx)</label>
+            <input type="file" class="form-control" id="standard" accept=".xlsx">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="standardTable"></table>
+        </div>
+
+        <div class="mb-3">
+            <label for="config" class="form-label">Select the config file (.xlsx)</label>
+            <input type="file" class="form-control" id="config" accept=".xlsx">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="configTable"></table>
+        </div>
+
+        <div class="mb-3">
+            <label for="data" class="form-label">Select the data file (.xlsx)</label>
+            <input type="file" class="form-control" id="data" accept=".xlsx">
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable"></table>
+        </div>
+
+    </div>
+
+    <div class="container mt-4">
+        <button id="captureButton">Download</button>
+        <button id="reloadButton">Refresh</button>
+        <h2>Report</h2>
+        <select id="people" class="form-control">
+            <!-- Options will be added here dynamically -->
+        </select>
+        <div class="mt-4">
+            <div id="barChart">
+                <!-- bars will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const Status = {
+            HEALTHY: 0,
+            WARNING: 1,
+            DANGEROUS: 2,
+        };
+
+        const gStandardData = {};
+        document.getElementById('standard').addEventListener(
+            "change", function () {
+                HandleStandard(gStandardData);
+            });
+
+        const gConfig = {
+            'v_space': 150,
+            'h_space': 30,
+            'value_font': 12,
+            'label_font': 12};
+        document.getElementById('config').addEventListener(
+            "change", function () {
+                HandleConfig(gConfig);
+            });
+
+        const gReport = {}
+        document.getElementById('data').addEventListener(
+            "change", function () {
+                HandleData(gStandardData, gReport, gConfig);
+            });
+
+        document.getElementById("captureButton").addEventListener(
+            "click", function () {
+                OnCaptureClick(gStandardData, gReport, gConfig);
+            });
+
+        document.getElementById("reloadButton").addEventListener(
+            "click", function () {
+                HandleConfig(gConfig);
+                HandleData(gStandardData, gReport, gConfig);
+            });
+
+    </script>
+</body>
+</html>
